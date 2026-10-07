@@ -78,7 +78,9 @@
     } [k] || label(k)) : label(k)
   }
 
-  // Navigation and department cards deliberately share the same department URL.
+  // The navigation and homepage heading open the department directory.
+  const departmentDirectoryRoute = () => lang === 'en' ? 'departments-en.html' : 'departments.html';
+
   function nav() {
     const primaryLinks = ['about', 'latest-events', 'campus-info', 'past-review']
       .map(key => a(route(key), esc(navLabel(key)), page === key ? 'active' : ''))
@@ -86,12 +88,6 @@
     const secondaryLinks = ['presidents', 'discounts', 'sponsors']
       .map(key => a(route(key), esc(navLabel(key)), page === key ? 'active' : ''))
       .join('');
-    const departmentLinks = data.departments.map(department => {
-      const name = esc(t(department.name));
-      return department.url ?
-        a(department.url, name) :
-        `<span class="nav-disabled">${name}</span>`;
-    }).join('');
     const languageOptions = [
         ['zh', '简体中文'],
         ['en', 'English'],
@@ -100,7 +96,7 @@
       .map(([value, name]) => `<option value="${value}" ${value === lang ? 'selected' : ''}>${name}</option>`).join('');
     const brand = image(data.settings.logo, 'MCSA') + `
       <span>
-        <strong>MCSA</strong>
+        <b>Monash Chinese Students Association</b>
         <small>${ui('蒙纳士中国学生会', 'Monash Chinese Students Association', '蒙納士中國學生會')}</small>
       </span>`;
 
@@ -113,14 +109,15 @@
           </button>
           <nav id="navigation" aria-label="${ui('主导航', 'Main navigation', '主導航')}">
             ${primaryLinks}
-            <details class="nav-dropdown">
-              <summary>${ui('部门招新', 'Recruitment', '部門招新')}</summary>
-              <div><div class="department-nav">${departmentLinks}</div></div>
-            </details>
+            ${a(departmentDirectoryRoute(), ui('部门招新', 'Recruitment', '部門招新'), page === 'recruitment' || page.startsWith('department-') ? 'active' : '')}
             ${secondaryLinks}
           </nav>
           <label class="language-control">
-            <span aria-hidden="true">◎</span>
+            <span class="language-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                <path d="M2 5h12M7 2h1m4 3c-1.5 4-4 7-8 9M5 8l6 6m1 8 5-11 5 11m-8-4h6"/>
+              </svg>
+            </span>
             <select id="language" aria-label="${ui('切换语言', 'Change language', '切換語言')}">
               ${languageOptions}
             </select>
@@ -191,7 +188,7 @@
       about: () => `<section class="section" id="about">${heading(label('about'))}<div class="prose">${paragraphs(data.pages.about.paragraphs)}</div>${postGridOptional('about')}</section>`,
       events: () => `<section class="section" id="events">${linkedHeading(label('latest-events'),'latest-events.html')}${postGrid('latest-events',3)}</section>`,
       presidents: carousel,
-      departments: () => `<section class="section" id="departments">${linkedHeading(ui('部门介绍','Departments','部門介紹'),'recruitment.html',paragraphs([data.settings.departmentHint]))}${departments()}</section>`
+      departments: () => `<section class="section" id="departments">${linkedHeading(ui('部门介绍','Departments','部門介紹'),departmentDirectoryRoute(),paragraphs([data.settings.departmentHint]))}${departments()}</section>`
     };
     return data.homeSections.filter(section => section.visible)
       .map(section => sections[section.id]?.() || '').join('') + postGridOptional('home');
