@@ -100,7 +100,7 @@
       .map(([value, name]) => `<option value="${value}" ${value === lang ? 'selected' : ''}>${name}</option>`).join('');
     const brand = image(data.settings.logo, 'MCSA') + `
       <span>
-        <strong>MCSA</strong>
+        <b>Monash Chinese Students Association</b>
         <small>${ui('蒙纳士中国学生会', 'Monash Chinese Students Association', '蒙納士中國學生會')}</small>
       </span>`;
 
@@ -191,7 +191,7 @@
       about: () => `<section class="section" id="about">${heading(label('about'))}<div class="prose">${paragraphs(data.pages.about.paragraphs)}</div>${postGridOptional('about')}</section>`,
       events: () => `<section class="section" id="events">${linkedHeading(label('latest-events'),'latest-events.html')}${postGrid('latest-events',3)}</section>`,
       presidents: carousel,
-      departments: () => `<section class="section" id="departments">${linkedHeading(ui('部门介绍','Departments','部門介紹'),'recruitment.html',paragraphs([data.settings.departmentHint]))}${departments()}</section>`
+      departments: () => `<section class="section" id="departments">${heading(ui('部门介绍','Departments','部門介紹'),paragraphs([data.settings.departmentHint]))}${departments()}</section>`
     };
     return data.homeSections.filter(section => section.visible)
       .map(section => sections[section.id]?.() || '').join('') + postGridOptional('home');
